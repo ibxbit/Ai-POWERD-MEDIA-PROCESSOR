@@ -57,8 +57,8 @@ MIT
 - **Voice Focus**: Prioritize human speech over background sounds
 
 ### Video Enhancement
-- **Color Correction**: Real-time color adjustment and lighting compensation
-- **Low-Light Compensation**: Enhance visibility in poor lighting conditions
+- **Color Correction**: Real time color adjustment and lighting compensation
+- **Low Light Compensation**: Enhance visibility in poor lighting conditions
 - **Background Blurring**: Professional background blur effect
 - **Background Replacement**: Virtual background' support
 
