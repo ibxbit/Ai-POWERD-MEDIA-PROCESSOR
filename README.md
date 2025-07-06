@@ -138,10 +138,6 @@ const config = {
 };
 ```
 
-## 🎮 Live Demo
-
-Check out the [live demo](demo/index.html) to see the library in action!
-
 ## 📚 API Reference
 
 ### MediaProcessor Class
