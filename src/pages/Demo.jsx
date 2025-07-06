@@ -34,13 +34,14 @@ export default function Demo() {
   const [enhanceStatus, setEnhanceStatus] = useState('');
   const [animationId, setAnimationId] = useState(null);
   const [lastFrameTime, setLastFrameTime] = useState(0);
+  const [performanceMode, setPerformanceMode] = useState(true); // Performance mode enabled by default
 
   // Apply video effects using Canvas with frame rate limiting
   const applyVideoEffects = useCallback((currentTime) => {
     if (!videoRef.current || !canvasRef.current || !enhance) return;
 
-    // Limit to 24 FPS for better performance
-    const targetFPS = 24;
+    // Very low FPS for maximum performance
+    const targetFPS = 10; // Reduced to 10 FPS for smooth performance
     const frameInterval = 1000 / targetFPS;
     
     if (currentTime - lastFrameTime < frameInterval) {
@@ -57,22 +58,26 @@ export default function Demo() {
 
     if (video.videoWidth === 0 || video.videoHeight === 0) return;
 
+    // Use full canvas size for better quality since performance is good
+    const canvasWidth = canvas.width;
+    const canvasHeight = canvas.height;
+
     // Maintain aspect ratio and prevent shrinking
     const videoAspect = video.videoWidth / video.videoHeight;
-    const canvasAspect = canvas.width / canvas.height;
+    const canvasAspect = canvasWidth / canvasHeight;
     
     let drawWidth, drawHeight, offsetX = 0, offsetY = 0;
     
     if (videoAspect > canvasAspect) {
       // Video is wider than canvas
-      drawHeight = canvas.height;
+      drawHeight = canvasHeight;
       drawWidth = drawHeight * videoAspect;
-      offsetX = (canvas.width - drawWidth) / 2;
+      offsetX = (canvasWidth - drawWidth) / 2;
     } else {
       // Video is taller than canvas
-      drawWidth = canvas.width;
+      drawWidth = canvasWidth;
       drawHeight = drawWidth / videoAspect;
-      offsetY = (canvas.height - drawHeight) / 2;
+      offsetY = (canvasHeight - drawHeight) / 2;
     }
 
     // Clear canvas
@@ -85,18 +90,18 @@ export default function Demo() {
     let hasEffects = false;
     let filterString = '';
 
-    // Combine all filters into one operation
+    // Combine all filters into one operation - simplified for performance
     if (config.video.colorCorrection.enabled) {
       const brightness = config.video.colorCorrection.brightness;
       const contrast = config.video.colorCorrection.contrast;
-      const saturation = config.video.colorCorrection.saturation;
-      filterString += `brightness(${brightness}) contrast(${contrast}) saturate(${saturation}) `;
+      // Remove saturation for better performance
+      filterString += `brightness(${brightness}) contrast(${contrast}) `;
       hasEffects = true;
     }
 
     if (config.video.backgroundBlur.enabled) {
       const intensity = config.video.backgroundBlur.intensity;
-      filterString += `blur(${intensity * 0.15}px) `; // Further reduced blur intensity
+      filterString += `blur(${intensity * 0.8}px) `; // Very strong blur effect for maximum visibility
       hasEffects = true;
     }
 
@@ -110,9 +115,9 @@ export default function Demo() {
     // Apply low light compensation separately (it's a different type of operation)
     if (config.video.lowLightCompensation.enabled) {
       const boost = config.video.lowLightCompensation.boost;
-      if (boost > 1.3) { // Only apply if significant boost is needed
+      if (boost > 2.0) { // Only apply if very significant boost is needed
         ctx.globalCompositeOperation = 'multiply';
-        ctx.fillStyle = `rgba(255, 255, 255, ${(boost - 1) * 0.1})`; // Further reduced intensity
+        ctx.fillStyle = `rgba(255, 255, 255, ${(boost - 1) * 0.02})`; // Much reduced intensity
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.globalCompositeOperation = 'source-over';
       }
@@ -215,9 +220,9 @@ export default function Demo() {
       const stream = await navigator.mediaDevices.getUserMedia({ 
         audio: true, 
         video: { 
-          width: { ideal: 1280 },
-          height: { ideal: 720 },
-          frameRate: { ideal: 30 }
+          width: { ideal: 480, max: 640 }, // Much reduced for performance
+          height: { ideal: 360, max: 480 }, // Much reduced for performance
+          frameRate: { ideal: 10, max: 15 }  // Much reduced for performance
         } 
       });
       setMediaStream(stream);
@@ -230,7 +235,7 @@ export default function Demo() {
         videoRef.current.play();
       }
       
-      setEnhanceStatus('Camera started successfully');
+      setEnhanceStatus('Camera started successfully (Performance Mode)');
     } catch (err) {
       setError(err.message || 'Failed to start demo');
       setEnhanceStatus('Failed to start camera');
@@ -558,6 +563,7 @@ export default function Demo() {
               style={{ 
                 width: '100%', 
                 height: '100%', 
+                objectFit: 'cover',
                 display: enhance ? 'block' : 'none'
               }} 
             />
