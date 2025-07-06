@@ -1,6 +1,6 @@
 {
   "name": "colloai-media-processor",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": false,
   "description": "ColloAI Media Processor: AI-powered JavaScript library for real-time video and audio enhancement in web applications.",
   "type": "module",
