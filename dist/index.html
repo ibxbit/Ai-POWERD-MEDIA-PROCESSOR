@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ColloAI Media Processor</title>
+  <meta name="description" content="AI-powered video and audio enhancement demo" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0c1b;
+      --headline: #fff;
+      --accent: #4f7cff;
+      --nav-link: #fff;
+      --nav-link-active: #4f7cff;
+      --nav-link-muted: #b0b3c7;
+      --cta-bg: #4f7cff;
+      --cta-bg-hover: #3756b5;
+      --card-bg: #15172b;
+      --card-radius: 18px;
+      --card-shadow: 0 4px 32px 0 rgba(31, 38, 135, 0.18);
+      --divider: #23243a;
+    }
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+      color: var(--headline);
+      box-sizing: border-box;
+    }
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: stretch;
+    }
+    .nav {
+      width: 100vw;
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 36px 48px 0 48px;
+      z-index: 2;
+    }
+    .logo {
+      font-size: 2rem;
+      font-weight: 900;
+      letter-spacing: 1px;
+      color: var(--headline);
+      font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    }
+    .logo span {
+      color: var(--accent);
+    }
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      align-items: center;
+    }
+    .nav-links a {
+      color: var(--nav-link);
+      text-decoration: none;
+      font-size: 1.08rem;
+      font-weight: 600;
+      opacity: 0.85;
+      transition: color 0.2s, opacity 0.2s;
+      position: relative;
+    }
+    .nav-links a.active, .nav-links a:hover {
+      color: var(--nav-link-active);
+      opacity: 1;
+    }
+    .nav-links .cta {
+      background: var(--cta-bg);
+      color: #fff;
+      border-radius: 8px;
+      padding: 10px 28px;
+      font-weight: 700;
+      font-size: 1.08rem;
+      margin-left: 18px;
+      box-shadow: 0 2px 12px 0 rgba(79,124,255,0.10);
+      transition: background 0.2s;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .nav-links .cta:hover {
+      background: var(--cta-bg-hover);
+    }
+    .main-content {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+      max-width: 1400px;
+      width: 100vw;
+      margin: 0 auto;
+      padding: 0 48px;
+      position: relative;
+      min-height: 420px;
+    }
+    .headline {
+      font-size: 3.6rem;
+      font-weight: 900;
+      line-height: 1.08;
+      margin-top: 60px;
+      margin-bottom: 0;
+      letter-spacing: -2px;
+      max-width: 520px;
+      word-break: break-word;
+      text-align: left;
+      align-self: flex-start;
+    }
+    .headline .accent {
+      color: var(--accent);
+      font-weight: 900;
+      letter-spacing: -1px;
+    }
+    .subheadline {
+      font-size: 1.18rem;
+      color: #e0e2f5;
+      font-weight: 500;
+      max-width: 520px;
+      margin-top: 80px;
+      margin-left: 40px;
+      line-height: 1.7;
+      text-align: left;
+      align-self: flex-start;
+      z-index: 2;
+    }
+    .try-demo-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.12rem;
+      font-weight: 700;
+      padding: 14px 32px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      background: var(--cta-bg);
+      color: #fff;
+      box-shadow: 0 2px 12px 0 rgba(79,124,255,0.10);
+      transition: background 0.2s, box-shadow 0.2s, color 0.2s;
+      text-decoration: none;
+      margin-top: 32px;
+    }
+    .try-demo-btn:hover {
+      background: var(--cta-bg-hover);
+      color: #fff;
+      box-shadow: 0 4px 24px 0 rgba(79,124,255,0.18);
+    }
+    .try-demo-btn .arrow {
+      font-size: 1.2em;
+      margin-left: 4px;
+      transition: transform 0.2s;
+    }
+    .try-demo-btn:hover .arrow {
+      transform: translateX(4px);
+    }
+    .main-content .watermark {
+      position: absolute;
+      left: 50%;
+      top: 50px;
+      font-size: 10rem;
+      color: #23243a;
+      font-weight: 900;
+      opacity: 0.13;
+      pointer-events: none;
+      user-select: none;
+      transform: translateX(-50%);
+      z-index: 0;
+    }
+    .side-label {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%) rotate(-90deg);
+      color: #b0b3c7;
+      font-size: 1rem;
+      letter-spacing: 0.2em;
+      font-weight: 600;
+      opacity: 0.7;
+      z-index: 10;
+      user-select: none;
+    }
+    .side-label.right {
+      left: unset;
+      right: 0;
+      top: 60%;
+      transform: translateY(-50%) rotate(90deg);
+      text-align: right;
+    }
+    .features-section {
+      width: 100vw;
+      max-width: 1400px;
+      margin: 0 auto;
+      margin-top: 60px;
+      padding: 0 48px 32px 48px;
+    }
+    .features-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 24px;
+      letter-spacing: 0.5px;
+    }
+    .features-list {
+      display: flex;
+      flex-direction: row;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+    .feature-card {
+      background: var(--card-bg);
+      border-radius: var(--card-radius);
+      box-shadow: var(--card-shadow);
+      padding: 28px 24px 22px 24px;
+      min-width: 260px;
+      max-width: 340px;
+      flex: 1 1 260px;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .feature-card .feature-title {
+      font-size: 1.08rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--accent);
+    }
+    .feature-card .feature-desc {
+      font-size: 1rem;
+      color: #e0e2f5;
+      font-weight: 400;
+      line-height: 1.5;
+    }
+    .feature-card .feature-badge {
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.92rem;
+      font-weight: 700;
+      border-radius: 6px;
+      padding: 2px 10px;
+      display: inline-block;
+      margin-bottom: 8px;
+    }
+    .socials {
+      position: fixed;
+      left: 32px;
+      bottom: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      z-index: 20;
+    }
+    .socials a {
+      color: #fff;
+      opacity: 0.7;
+      font-size: 1.3rem;
+      transition: opacity 0.2s;
+      text-decoration: none;
+    }
+    .socials a:hover {
+      opacity: 1;
+    }
+    @media (max-width: 1100px) {
+      .main-content, .features-section {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+      .nav {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+    }
+    @media (max-width: 900px) {
+      .main-content {
+        flex-direction: column;
+        align-items: flex-start;
+        min-height: 320px;
+        padding-top: 0;
+      }
+      .headline {
+        font-size: 2.2rem;
+        margin-top: 36px;
+        max-width: 100vw;
+        text-align: center;
+        align-self: center;
+      }
+      .subheadline {
+        margin-top: 32px;
+        margin-left: 0;
+        font-size: 1rem;
+        max-width: 100vw;
+        text-align: center;
+        align-self: center;
+      }
+      .main-content .watermark {
+        font-size: 5rem;
+        top: 80px;
+      }
+      .try-demo-btn {
+        margin-top: 24px;
+        width: 100%;
+        justify-content: center;
+      }
+      .features-list {
+        flex-direction: column;
+        gap: 18px;
+      }
+      .feature-card {
+        min-width: 0;
+        max-width: 100vw;
+      }
+    }
+    @media (max-width: 600px) {
+      .nav {
+        flex-direction: column;
+        gap: 18px;
+        padding-top: 18px;
+      }
+      .main-content {
+        padding-top: 0;
+      }
+      .features-section {
+        padding: 0 8px 18px 8px;
+      }
+      .socials {
+        left: 10px;
+        bottom: 10px;
+        gap: 10px;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <script type="module" crossorigin src="/assets/index-dc3fdde6.js"></script>
+</head>
+<body style="margin:0;padding:0;">
+  <div id="root"></div>
+  
+</body>
+</html> 
