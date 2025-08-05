@@ -1,7 +1,7 @@
 # ColloAI Media Processor 
 
 ColloAI Media Processor is a JavaScript library for real time AI powered video and audio enhancement in web applications.
-
+ 
 ## Features
 - Real time video effects: background blur, color correction, low light boost
 - AI audio processing: noise suppression, automatic gain control, voice focus
